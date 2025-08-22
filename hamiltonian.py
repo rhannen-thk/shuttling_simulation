@@ -55,9 +55,11 @@ g = 2 # approximate landé g factor
 mu_B = 58 # approximate bohr magneton in ueV/T
 B = 50 # approximate magnetic flux density in mT
 E_B = g * mu_B * B
+Delta_E_B = 0.041 # ueV ~= 10 MHz?
 
 def hamiltonian(Delta, E_B):
-    H = (E_B / 2) * sigma_z + np.tensordot(Delta, tau, axes=1)
+    n_hat_Delta = Delta / np.linalg.norm(Delta)
+    H = (E_B / 2) * sigma_z + np.tensordot(Delta, tau, axes=1)# + np.kron((Delta_E_B / 4) * np.tensordot(n_hat_Delta, tau, axes=1), sigma_z)
     return H
 
 vec_hamiltonian = np.vectorize(hamiltonian)
