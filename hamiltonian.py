@@ -23,11 +23,15 @@ pauli_z = np.array([
     [ 0, -1]
 ])
 
-sigma_z = np.kron(pauli_0, pauli_z)
+sigma_z_1 = pauli_z
 
-tau_x = np.kron(pauli_x, pauli_0)
-tau_y = np.kron(pauli_y, pauli_0)
-tau = np.array([tau_x, tau_y])
+sigma_z_2 = np.kron(pauli_0, pauli_z)
+
+tau_1 = np.array([pauli_x, pauli_y])
+
+tau_x_2 = np.kron(pauli_x, pauli_0)
+tau_y_2 = np.kron(pauli_y, pauli_0)
+tau_2 = np.array([tau_x_2, tau_y_2])
 
 well_length = 500
 well_width = 50
@@ -55,14 +59,21 @@ g = 2 # approximate landé g factor
 mu_B = 58 # approximate bohr magneton in ueV/T
 B = 50 # approximate magnetic flux density in mT
 E_B = g * mu_B * B
+
+f_B = 10 # MHz
+timestep = 0.000002 # ?
+h = 0 # TODO
+h_bar = 0 # TODO
+J_to_eV = 0 # TODO
+
 Delta_E_B = 0.041 # ueV ~= 10 MHz?
 
 def hamiltonian(Delta, E_B):
     n_hat_Delta = Delta / np.linalg.norm(Delta)
-    H = (E_B / 2) * sigma_z + np.tensordot(Delta, tau, axes=1)# + np.kron((Delta_E_B / 4) * np.tensordot(n_hat_Delta, tau, axes=1), sigma_z)
+    H = (E_B / 2) * sigma_z_2 + np.tensordot(Delta, tau_2, axes=1) + np.kron((Delta_E_B / 4) * np.tensordot(n_hat_Delta, tau_1, axes=1), sigma_z_1)
     return H
 
-vec_hamiltonian = np.vectorize(hamiltonian)
+vec_hamiltonian = np.vectorize(hamiltonian) # ?
 
 H = [[hamiltonian(Delta[x,y], E_B) for y in range(0, well_width)] for x in range(0, well_length)]
 
