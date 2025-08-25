@@ -33,20 +33,23 @@ tau_x_2 = np.kron(pauli_x, pauli_0)
 tau_y_2 = np.kron(pauli_y, pauli_0)
 tau_2 = np.array([tau_x_2, tau_y_2])
 
-well_length = 500
-well_width = 50
-well_height = 10
+well_length = 500 # nm
+well_width = 50 # nm
+well_height = 10 # nm
+
+a_x = 5 # nm
+a_y = 5 # nm
+s_x = a_x / np.sqrt(2)
+s_y = a_y / np.sqrt(2)
+s = (s_x, s_y, 0)
+
+sigma_delta = 30
 
 # ueV, ueV, (nm, nm) ?
-Delta_R = np.random.normal(0.0, 30, (well_length, well_width))
-Delta_R = scipy.ndimage.gaussian_filter(Delta_R, sigma = 5)
-
-Delta_J = np.random.normal(0.0, 30, (well_length, well_width))
-Delta_J = scipy.ndimage.gaussian_filter(Delta_J, sigma = 5)
-
+Delta_R = np.random.normal(0.0, sigma_delta, (well_length, well_width))
+Delta_J = np.random.normal(0.0, sigma_delta, (well_length, well_width))
 Delta = np.moveaxis([Delta_R, Delta_J], 0, -1)
-#Delta = scipy.ndimage.gaussian_filter(Delta, sigma=5)
-# replace with two point covariance rule?
+Delta = scipy.ndimage.gaussian_filter(Delta, sigma=s) 
 
 plt.imshow(Delta[:, :, 0])
 plt.show()
@@ -62,9 +65,9 @@ E_B = g * mu_B * B
 
 f_B = 10 # MHz
 timestep = 0.000002 # ?
-h = 0 # TODO
-h_bar = 0 # TODO
-J_to_eV = 0 # TODO
+h = 0 # Js / eVs ?
+h_bar = h / (2 * np.pi)
+J_to_eV = 0 # e = 1.602176634e−19
 
 Delta_E_B = 0.041 # ueV ~= 10 MHz?
 
